@@ -2,27 +2,39 @@
 interface Props {
   images: string[];
   altPrefix: string;
+  imageData?: Array<{ src: string; width: number; height: number }>;
 }
 
-const { images, altPrefix } = Astro.props;
+const { images, altPrefix, imageData } = Astro.props;
 ---
 
-<div class="masonry-container">
+<!-- Loading skeleton -->
+<div id="loading-skeleton" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-0 p-4">
+  {images.map(() => (
+    <div class="bg-industrial-blue animate-pulse" style="height: 300px;"></div>
+  ))}
+</div>
+
+<div class="masonry-container opacity-0 transition-opacity duration-500" id="masonry-container">
   <div class="masonry-grid">
-    {images.map((image, index) => (
-      <div class="masonry-item group cursor-pointer relative" data-index={index}>
-        <img 
-          src={image}
-          alt={`${altPrefix} ${index + 1}`}
-          class="w-full h-auto transition-transform duration-300 group-hover:scale-105 lightbox-trigger"
-          loading="lazy"
-          draggable="false"
-          data-index={index}
-        />
-        <!-- Invisible overlay to prevent direct image interaction -->
-        <div class="absolute inset-0 pointer-events-auto lightbox-trigger" data-index={index}></div>
-      </div>
-    ))}
+    {images.map((image, index) => {
+      const data = imageData?.[index];
+      return (
+        <div class="masonry-item group cursor-pointer relative" data-index={index}>
+          <img 
+            src={image}
+            alt={`${altPrefix} ${index + 1}`}
+            width={data?.width}
+            height={data?.height}
+            class="w-full h-auto transition-transform duration-300 group-hover:scale-105 lightbox-trigger"
+            loading={index < 8 ? "eager" : "lazy"}
+            draggable="false"
+            data-index={index}
+          />
+          <div class="absolute inset-0 pointer-events-auto lightbox-trigger" data-index={index}></div>
+        </div>
+      );
+    })}
   </div>
 </div>
 
@@ -69,6 +81,15 @@ const { images, altPrefix } = Astro.props;
     display: block;
     width: 100%;
     height: auto;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  .animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
 </style>
 
@@ -117,6 +138,41 @@ const { images, altPrefix } = Astro.props;
   const lightbox = document.getElementById('lightbox');
   const lightboxImage = document.getElementById('lightbox-image');
   const currentIndexSpan = document.getElementById('current-index');
+  const skeleton = document.getElementById('loading-skeleton');
+  const container = document.getElementById('masonry-container');
+  
+  // Hide skeleton and show masonry once images start loading
+  function showMasonry() {
+    skeleton.style.display = 'none';
+    container.style.opacity = '1';
+  }
+
+  // Check if images are loaded
+  const gridImages = document.querySelectorAll('.masonry-item img');
+  let loadedCount = 0;
+  const totalImages = gridImages.length;
+
+  gridImages.forEach((img) => {
+    if (img.complete) {
+      loadedCount++;
+    } else {
+      img.addEventListener('load', () => {
+        loadedCount++;
+        // Show masonry when first few images load
+        if (loadedCount >= Math.min(8, totalImages * 0.3)) {
+          showMasonry();
+        }
+      });
+    }
+  });
+
+  // If images are already cached, show immediately
+  if (loadedCount >= Math.min(8, totalImages * 0.3)) {
+    showMasonry();
+  }
+
+  // Fallback: show after 500ms regardless
+  setTimeout(showMasonry, 500);
   
   function openLightbox(index) {
     currentIndex = index;
