@@ -3,23 +3,16 @@ import Layout from '../layouts/Layout.astro';
 import PhotoGrid from '../components/PhotoGrid.astro';
 import { readdir } from 'node:fs/promises';
 import { join } from 'node:path';
-import { existsSync } from 'node:fs';
 
 // Get all image files from the misc folder
 const imagesDir = join(process.cwd(), 'public', 'images', 'misc');
+const files = await readdir(imagesDir);
 
-let images = [];
-
-// Check if directory exists before trying to read it
-if (existsSync(imagesDir)) {
-  const files = await readdir(imagesDir);
-  
-  // Filter for image files and create paths
-  images = files
-    .filter(file => /\.(jpg|jpeg|png|webp|gif)$/i.test(file))
-    .sort() // Optional: sort alphabetically
-    .map(file => `/images/misc/${file}`);
-}
+// Filter for image files and create paths
+const images = files
+  .filter(file => /\.(jpg|jpeg|png|webp|gif)$/i.test(file))
+  .sort() // Optional: sort alphabetically
+  .map(file => `/images/misc/${file}`);
 ---
 
 <Layout 
