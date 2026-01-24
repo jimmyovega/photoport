@@ -1,0 +1,161 @@
+---
+const currentPath = Astro.url.pathname;
+---
+
+<header class="bg-industrial-blue border-b border-cool-blue sticky top-0 z-50">
+  <nav class="container mx-auto px-4 py-4">
+    <div class="flex items-center justify-between">
+      <a href="/" class="hover:opacity-80 transition-opacity z-50 relative">
+        <img 
+          src="/images/logo.png" 
+          alt="Portfolio Logo" 
+          class="h-12 w-auto"
+          draggable="false"
+        />
+      </a>
+      
+      <!-- Desktop Navigation - hidden on smaller screens -->
+      <ul class="hidden lg:flex gap-8">
+        <li>
+          <a 
+            href="/" 
+            class={`hover:text-accent-blue transition-colors ${currentPath === '/' ? 'text-accent-blue' : ''}`}
+          >
+            Home
+          </a>
+        </li>
+        <li>
+          <a 
+            href="/studio" 
+            class={`hover:text-accent-blue transition-colors ${currentPath === '/studio' ? 'text-accent-blue' : ''}`}
+          >
+            Studio
+          </a>
+        </li>
+        <li>
+          <a 
+            href="/street" 
+            class={`hover:text-accent-blue transition-colors ${currentPath === '/street' ? 'text-accent-blue' : ''}`}
+          >
+            Street
+          </a>
+        </li>
+        <li>
+          <a 
+            href="/location" 
+            class={`hover:text-accent-blue transition-colors ${currentPath === '/location' ? 'text-accent-blue' : ''}`}
+          >
+            On Location
+          </a>
+        </li>
+        <li>
+          <a 
+            href="/miscellaneous" 
+            class={`hover:text-accent-blue transition-colors ${currentPath === '/miscellaneous' ? 'text-accent-blue' : ''}`}
+          >
+            Miscellaneous
+          </a>
+        </li>
+        <li>
+          <a 
+            href="/contact" 
+            class={`hover:text-accent-blue transition-colors ${currentPath === '/contact' ? 'text-accent-blue' : ''}`}
+          >
+            Contact
+          </a>
+        </li>
+      </ul>
+      
+      <!-- Hamburger Button - shows when nav would overflow -->
+      <button 
+        id="hamburger" 
+        class="lg:hidden text-light-gray hover:text-accent-blue transition-colors z-50 relative"
+        aria-label="Toggle menu"
+      >
+        <svg id="hamburger-icon" class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+        <svg id="close-icon" class="w-8 h-8 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+    
+    <!-- Mobile Navigation - slides down from header -->
+    <div id="mobile-menu" class="hidden lg:hidden">
+      <ul class="flex flex-col gap-4 mt-6 pb-4">
+        <li>
+          <a 
+            href="/" 
+            class={`block py-2 hover:text-accent-blue transition-colors ${currentPath === '/' ? 'text-accent-blue' : ''}`}
+          >
+            Home
+          </a>
+        </li>
+        <li>
+          <a 
+            href="/studio" 
+            class={`block py-2 hover:text-accent-blue transition-colors ${currentPath === '/studio' ? 'text-accent-blue' : ''}`}
+          >
+            Studio
+          </a>
+        </li>
+        <li>
+          <a 
+            href="/street" 
+            class={`block py-2 hover:text-accent-blue transition-colors ${currentPath === '/street' ? 'text-accent-blue' : ''}`}
+          >
+            Street
+          </a>
+        </li>
+        <li>
+          <a 
+            href="/location" 
+            class={`block py-2 hover:text-accent-blue transition-colors ${currentPath === '/location' ? 'text-accent-blue' : ''}`}
+          >
+            On Location
+          </a>
+        </li>
+        <li>
+          <a 
+            href="/miscellaneous" 
+            class={`block py-2 hover:text-accent-blue transition-colors ${currentPath === '/miscellaneous' ? 'text-accent-blue' : ''}`}
+          >
+            Miscellaneous
+          </a>
+        </li>
+        <li>
+          <a 
+            href="/contact" 
+            class={`block py-2 hover:text-accent-blue transition-colors ${currentPath === '/contact' ? 'text-accent-blue' : ''}`}
+          >
+            Contact
+          </a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+</header>
+
+<script>
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobile-menu');
+  const hamburgerIcon = document.getElementById('hamburger-icon');
+  const closeIcon = document.getElementById('close-icon');
+  
+  hamburger.addEventListener('click', () => {
+    mobileMenu.classList.toggle('hidden');
+    hamburgerIcon.classList.toggle('hidden');
+    closeIcon.classList.toggle('hidden');
+  });
+  
+  // Close menu when clicking a link
+  const mobileLinks = mobileMenu.querySelectorAll('a');
+  mobileLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      mobileMenu.classList.add('hidden');
+      hamburgerIcon.classList.remove('hidden');
+      closeIcon.classList.add('hidden');
+    });
+  });
+</script>

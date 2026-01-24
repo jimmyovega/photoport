@@ -1,0 +1,90 @@
+---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = 'Professional photography portfolio showcasing studio, street, and miscellaneous photography work.' } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta name="keywords" content="photography, portfolio, studio photography, street photography, photographer, professional photography" />
+    <meta name="author" content="Azure Lens Photography" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:title" content={title} />
+    <meta property="twitter:description" content={description} />
+    
+    <link rel="icon" type="image/svg+xml" href="/images/favicon.png" />
+    <title>{title}</title>
+  </head>
+  <body class="bg-industrial-dark text-light-gray min-h-screen flex flex-col">
+    <Header />
+    <main class="flex-grow">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>
+
+<style is:global>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  html {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  }
+  
+  /* Disable image selection and dragging */
+  img {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    pointer-events: none;
+  }
+</style>
+
+<script>
+  // Disable right-click on images
+  document.addEventListener('contextmenu', (e) => {
+    if (e.target instanceof HTMLImageElement) {
+      e.preventDefault();
+      return false;
+    }
+  });
+  
+  // Disable drag and drop on images
+  document.addEventListener('dragstart', (e) => {
+    if (e.target instanceof HTMLImageElement) {
+      e.preventDefault();
+      return false;
+    }
+  });
+  
+  // Disable common keyboard shortcuts for saving
+  document.addEventListener('keydown', (e) => {
+    // Ctrl+S or Cmd+S (Save)
+    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+      e.preventDefault();
+      return false;
+    }
+  });
+</script>

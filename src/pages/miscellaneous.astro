@@ -1,0 +1,34 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PhotoGrid from '../components/PhotoGrid.astro';
+import { readdir } from 'node:fs/promises';
+import { join } from 'node:path';
+
+// Get all image files from the misc folder
+const imagesDir = join(process.cwd(), 'public', 'images', 'misc');
+const files = await readdir(imagesDir);
+
+// Filter for image files and create paths
+const images = files
+  .filter(file => /\.(jpg|jpeg|png|webp|gif)$/i.test(file))
+  .sort() // Optional: sort alphabetically
+  .map(file => `/images/misc/${file}`);
+---
+
+<Layout 
+  title="Miscellaneous Photography - Portfolio"
+  description="Creative and experimental photography work including various subjects and styles."
+>
+  <div class="container mx-auto py-12">
+    <div class="text-center mb-8">
+      <h1 class="text-4xl md:text-5xl font-bold text-accent-blue mb-4">
+        Miscellaneous
+      </h1>
+      <p class="text-lg text-light-gray max-w-2xl mx-auto">
+        Experimental and creative work that doesn't fit in a box
+      </p>
+    </div>
+    
+    <PhotoGrid images={images} altPrefix="Miscellaneous photography" />
+  </div>
+</Layout>
