@@ -17,7 +17,11 @@ import Layout from '../layouts/Layout.astro';
         </p>
       </div>
       
-      <form class="bg-industrial-blue p-8 rounded-lg border border-cool-blue">
+      <form 
+        class="bg-industrial-blue p-8 rounded-lg border border-cool-blue"
+        action="https://api.web3forms.com/submit" method="POST"
+      >
+        <input type="hidden" name="access_key" value="dd193521-e4a5-409c-aad1-034361404609">
         <div class="mb-6">
           <label for="name" class="block text-light-gray mb-2 font-medium">
             Name *
