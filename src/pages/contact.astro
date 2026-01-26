@@ -29,7 +29,7 @@ import Layout from '../layouts/Layout.astro';
       
       <form id="contact-form" class="bg-industrial-blue p-8 rounded-lg border border-cool-blue">
         <!-- Replace with your Web3Forms access key from https://web3forms.com -->
-        <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY_HERE">
+        <!-- <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY_HERE"> -->
         
         <!-- Honeypot for spam protection -->
         <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
@@ -98,79 +98,87 @@ import Layout from '../layouts/Layout.astro';
 </Layout>
 
 <script>
-  const form = document.getElementById('contact-form') as HTMLFormElement;
+  const form = document.getElementById('contact-form');
   const successMessage = document.getElementById('success-message');
   const errorMessage = document.getElementById('error-message');
   
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    const formData = new FormData(form);
-    const object = Object.fromEntries(formData);
-    
-    // Remove access_key and botcheck fields for Cloudflare function
-    delete object.access_key;
-    delete object.botcheck;
-    
-    const json = JSON.stringify(object);
-    
-    // Disable button during submission
-    const button = form.querySelector('button[type="submit"]') as HTMLButtonElement;
-    const originalText = button.textContent;
-    button.disabled = true;
-    button.textContent = 'Sending...';
-    
-    try {
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: json
-      });
+  if (form) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
       
-      // Check if response is OK first
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Server error:', response.status, errorText);
-        throw new Error(`Server returned ${response.status}`);
-      }
-
-      // Check if response has content
-      const contentType = response.headers.get('content-type');
-      if (!contentType || !contentType.includes('application/json')) {
-        const text = await response.text();
-        console.error('Non-JSON response:', text);
-        throw new Error('Invalid response from server');
-      }
-
-      const result = await response.json();
+      const formData = new FormData(/** @type {HTMLFormElement} */ (form));
+      const object = Object.fromEntries(formData);
       
-      if (result.success) {
-        successMessage?.classList.remove('hidden');
-        errorMessage?.classList.add('hidden');
-        form.reset();
+      // Remove access_key and botcheck fields for Cloudflare function
+      delete object.access_key;
+      delete object.botcheck;
+      
+      const json = JSON.stringify(object);
+      
+      // Disable button during submission
+      const button = /** @type {HTMLButtonElement | null} */ (form.querySelector('button[type="submit"]'));
+      const originalText = button ? button.textContent : '';
+      if (button) {
+        button.disabled = true;
+        button.textContent = 'Sending...';
+      }
+      
+      try {
+        const response = await fetch('/api/contact', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: json
+        });
         
-        // Hide success message after 5 seconds
-        setTimeout(() => {
-          successMessage?.classList.add('hidden');
-        }, 5000);
-      } else {
-        throw new Error(result.message || 'Form submission failed');
+        // Check if response is OK first
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error('Server error:', response.status, errorText);
+          throw new Error(`Server returned ${response.status}`);
+        }
+    
+        // Check if response has content
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          const text = await response.text();
+          console.error('Non-JSON response:', text);
+          throw new Error('Invalid response from server');
+        }
+    
+        const result = await response.json();
+        
+        if (result.success) {
+          successMessage?.classList.remove('hidden');
+          errorMessage?.classList.add('hidden');
+          /** @type {HTMLFormElement} */ (form).reset();
+          
+          // Hide success message after 5 seconds
+          setTimeout(() => {
+            successMessage?.classList.add('hidden');
+          }, 5000);
+        } else {
+          throw new Error(result.message || 'Form submission failed');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        
+        // Show more specific error in console
+        if (error instanceof Error) {
+          console.error('Error details:', error.message);
+        }
+        
+        errorMessage?.classList.remove('hidden');
+        successMessage?.classList.add('hidden');
+      } finally {
+        if (button) {
+          button.disabled = false;
+          button.textContent = originalText;
+        }
       }
-    } catch (error) {
-      console.error('Error:', error);
-      
-      // Show more specific error in console
-      if (error instanceof Error) {
-        console.error('Error details:', error.message);
-      }
-      
-      errorMessage?.classList.remove('hidden');
-      successMessage?.classList.add('hidden');
-    } finally {
-      button.disabled = false;
-      button.textContent = originalText;
-    }
-  });
+    });
+  } else {
+    console.error('Contact form element not found in DOM.');
+  }
 </script>
