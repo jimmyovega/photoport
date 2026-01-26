@@ -1,3 +1,4 @@
+// Simple version without D1 for testing
 export async function onRequestPost(context) {
   try {
     const formData = await context.request.json();
@@ -30,22 +31,8 @@ export async function onRequestPost(context) {
     // Get user info
     const ipAddress = context.request.headers.get('CF-Connecting-IP') || 'unknown';
     const userAgent = context.request.headers.get('User-Agent') || 'unknown';
-    
-    // 1. Store in D1 Database
-    try {
-      await context.env.DB.prepare(
-        `INSERT INTO contact_submissions 
-         (name, email, subject, message, ip_address, user_agent) 
-         VALUES (?, ?, ?, ?, ?, ?)`
-      )
-      .bind(name, email, subject, message, ipAddress, userAgent)
-      .run();
-    } catch (dbError) {
-      console.error('Database error:', dbError);
-      // Continue even if DB fails
-    }
 
-    // 2. Send Email using MailChannels
+    // Prepare email body
     const emailBody = `
 New Contact Form Submission
 
@@ -108,47 +95,46 @@ User Agent: ${userAgent}
 </html>
     `.trim();
 
-    // Send email via MailChannels
-    try {
-      const emailResponse = await fetch('https://api.mailchannels.net/tx/v1/send', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+    // Send email via MailChannels (no authentication needed on Cloudflare)
+    const recipientEmail = context.env.RECIPIENT_EMAIL || 'your-email@example.com';
+    
+    const emailResponse = await fetch('https://api.mailchannels.net/tx/v1/send', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        personalizations: [
+          {
+            to: [{ email: recipientEmail }],
+          }
+        ],
+        from: {
+          email: 'noreply@azurelens.work',
+          name: 'Portfolio Contact Form'
         },
-        body: JSON.stringify({
-          personalizations: [
-            {
-              to: [{ email: context.env.RECIPIENT_EMAIL || 'your-email@example.com' }],
-            }
-          ],
-          from: {
-            email: 'contact@azurelens.work',
-            name: 'Portfolio Contact Form'
+        reply_to: {
+          email: email,
+          name: name
+        },
+        subject: `Contact Form: ${subject}`,
+        content: [
+          {
+            type: 'text/plain',
+            value: emailBody
           },
-          reply_to: {
-            email: email,
-            name: name
-          },
-          subject: `Contact Form: ${subject}`,
-          content: [
-            {
-              type: 'text/plain',
-              value: emailBody
-            },
-            {
-              type: 'text/html',
-              value: emailHtml
-            }
-          ]
-        })
-      });
+          {
+            type: 'text/html',
+            value: emailHtml
+          }
+        ]
+      })
+    });
 
-      if (!emailResponse.ok) {
-        console.error('Email send failed:', await emailResponse.text());
-      }
-    } catch (emailError) {
-      console.error('Email error:', emailError);
-      // Continue anyway
+    if (!emailResponse.ok) {
+      const errorText = await emailResponse.text();
+      console.error('Email send failed:', errorText);
+      throw new Error('Failed to send email');
     }
     
     return new Response(JSON.stringify({ 
@@ -166,10 +152,13 @@ User Agent: ${userAgent}
     console.error('Error processing form:', error);
     return new Response(JSON.stringify({ 
       success: false, 
-      message: 'Server error processing your request' 
+      message: error.message || 'Server error processing your request' 
     }), {
       status: 500,
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
+      }
     });
   }
 }
