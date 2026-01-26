@@ -17,11 +17,23 @@ import Layout from '../layouts/Layout.astro';
         </p>
       </div>
       
-      <form 
-        class="bg-industrial-blue p-8 rounded-lg border border-cool-blue"
-        action="https://api.web3forms.com/submit" method="POST"
-      >
-        <input type="hidden" name="access_key" value="dd193521-e4a5-409c-aad1-034361404609">
+      <!-- Success message (hidden by default) -->
+      <div id="success-message" class="hidden bg-cool-blue border border-accent-blue p-6 rounded-lg mb-6 text-center">
+        <p class="text-light-gray text-lg">✓ Thank you! Your message has been sent successfully.</p>
+      </div>
+      
+      <!-- Error message (hidden by default) -->
+      <div id="error-message" class="hidden bg-red-900 border border-red-600 p-6 rounded-lg mb-6 text-center">
+        <p class="text-light-gray text-lg">✗ Something went wrong. Please try again.</p>
+      </div>
+      
+      <form id="contact-form" class="bg-industrial-blue p-8 rounded-lg border border-cool-blue">
+        <!-- Replace with your Web3Forms access key from https://web3forms.com -->
+        <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY_HERE">
+        
+        <!-- Honeypot for spam protection -->
+        <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
+        
         <div class="mb-6">
           <label for="name" class="block text-light-gray mb-2 font-medium">
             Name *
@@ -81,10 +93,63 @@ import Layout from '../layouts/Layout.astro';
           Send Message
         </button>
       </form>
-      
-      <p class="text-center text-sm text-light-gray mt-6">
-        Note: You'll need to integrate a form handler like Formspree, Web3Forms, or Cloudflare Pages Functions to process form submissions.
-      </p>
     </div>
   </div>
 </Layout>
+
+<script>
+  const form = document.getElementById('contact-form') as HTMLFormElement;
+  const successMessage = document.getElementById('success-message');
+  const errorMessage = document.getElementById('error-message');
+  
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const formData = new FormData(form);
+    const object = Object.fromEntries(formData);
+    
+    // Remove access_key and botcheck fields for Cloudflare function
+    delete object.access_key;
+    delete object.botcheck;
+    
+    const json = JSON.stringify(object);
+    
+    // Disable button during submission
+    const button = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+    const originalText = button.textContent;
+    button.disabled = true;
+    button.textContent = 'Sending...';
+    
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: json
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        successMessage?.classList.remove('hidden');
+        errorMessage?.classList.add('hidden');
+        form.reset();
+        
+        // Hide success message after 5 seconds
+        setTimeout(() => {
+          successMessage?.classList.add('hidden');
+        }, 5000);
+      } else {
+        throw new Error(result.message || 'Form submission failed');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      errorMessage?.classList.remove('hidden');
+      successMessage?.classList.add('hidden');
+    } finally {
+      button.disabled = false;
+      button.textContent = originalText;
+    }
+  });
+</script>
