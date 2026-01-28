@@ -27,7 +27,7 @@ const { images, altPrefix, imageData } = Astro.props;
             width={data?.width}
             height={data?.height}
             class="w-full h-auto transition-transform duration-300 group-hover:scale-105 lightbox-trigger"
-            loading="lazy"
+            loading={index < 8 ? "eager" : "lazy"}
             draggable="false"
             data-index={index}
           />
