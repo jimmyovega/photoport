@@ -52,13 +52,15 @@ const { title, description = 'Professional photography portfolio showcasing stud
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   }
   
-  /* Disable image selection and dragging */
+  /* Disable image text selection */
   img {
     user-select: none;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
-    pointer-events: none;
+    /* Note: pointer-events intentionally NOT set to none here —
+       that would break lightbox clicks and touch interactions.
+       Right-click and drag protection is handled via JS below. */
   }
 </style>
 

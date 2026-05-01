@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+const web3formsKey = import.meta.env.WEB3FORMS_ACCESS_KEY;
 ---
 
 <Layout 
@@ -21,7 +22,7 @@ import Layout from '../layouts/Layout.astro';
         class="bg-industrial-blue p-8 rounded-lg border border-cool-blue"
         action="https://api.web3forms.com/submit" method="POST"
       >
-        <input type="hidden" name="access_key" value="dd193521-e4a5-409c-aad1-034361404609">
+        <input type="hidden" name="access_key" value={web3formsKey}>
         <div class="mb-6">
           <label for="name" class="block text-light-gray mb-2 font-medium">
             Name *
@@ -82,9 +83,7 @@ import Layout from '../layouts/Layout.astro';
         </button>
       </form>
       
-      <p class="text-center text-sm text-light-gray mt-6">
-        Note: You'll need to integrate a form handler like Formspree, Web3Forms, or Cloudflare Pages Functions to process form submissions.
-      </p>
+
     </div>
   </div>
 </Layout>
