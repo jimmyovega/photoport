@@ -2,12 +2,8 @@
   "name": "shiny-voice-19bd",
   "compatibility_date": "2026-01-24",
 
-  // Static assets served from the Astro build output
-  "assets": {
-    "directory": "./dist"
-  },
-
-  // D1 Database — stores all contact form submissions
+  // D1 Database binding — stores contact form submissions
+  // This binding is available to functions/api/contact.js as context.env.DB
   "d1_databases": [
     {
       "binding": "DB",
