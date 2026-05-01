@@ -1,27 +1,44 @@
-export async function onRequestPost(context) {
-  try {
-    const formData = await context.request.json();
+export default {
+  async fetch(request, env, ctx) {
+    const url = new URL(request.url);
 
-    // Validate required fields
+    // Route POST /api/contact to the contact handler
+    if (url.pathname === '/api/contact') {
+      if (request.method === 'OPTIONS') {
+        return corsPreflightResponse();
+      }
+      if (request.method === 'POST') {
+        return handleContact(request, env);
+      }
+      return new Response('Method Not Allowed', { status: 405 });
+    }
+
+    // All other requests: serve static assets
+    return env.ASSETS.fetch(request);
+  },
+};
+
+async function handleContact(request, env) {
+  try {
+    const formData = await request.json();
     const { name, email, subject, message } = formData;
 
     if (!name || !email || !subject || !message) {
       return jsonResponse(400, { success: false, message: 'All fields are required' });
     }
 
-    // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return jsonResponse(400, { success: false, message: 'Invalid email format' });
     }
 
-    const ipAddress = context.request.headers.get('CF-Connecting-IP') || 'unknown';
-    const userAgent = context.request.headers.get('User-Agent') || 'unknown';
+    const ipAddress = request.headers.get('CF-Connecting-IP') || 'unknown';
+    const userAgent = request.headers.get('User-Agent') || 'unknown';
     const submittedAt = new Date().toISOString();
 
-    // 1. Store submission in D1 database
+    // 1. Store in D1
     try {
-      await context.env.DB.prepare(
+      await env.DB.prepare(
         `INSERT INTO contact_submissions (name, email, subject, message, ip_address, user_agent)
          VALUES (?, ?, ?, ?, ?, ?)`
       )
@@ -29,16 +46,14 @@ export async function onRequestPost(context) {
         .run();
     } catch (dbError) {
       console.error('D1 insert error:', dbError);
-      // Non-fatal — continue to send email even if DB write fails
     }
 
     // 2. Send email via Resend
-    const resendApiKey = context.env.RESEND_API_KEY;
-    const recipientEmail = context.env.RECIPIENT_EMAIL || 'contact@vrc6.com';
+    const resendApiKey = env.RESEND_API_KEY;
+    const recipientEmail = env.RECIPIENT_EMAIL || 'contact@vrc6.com';
 
     if (!resendApiKey) {
-      console.error('RESEND_API_KEY environment variable is not set');
-      // Return success to user — submission is saved in D1 — but log the issue
+      console.error('RESEND_API_KEY not set');
       return jsonResponse(200, { success: true, message: 'Message received. We will be in touch soon.' });
     }
 
@@ -123,9 +138,7 @@ IP: ${ipAddress}
     });
 
     if (!resendResponse.ok) {
-      const errorBody = await resendResponse.text();
-      console.error('Resend API error:', resendResponse.status, errorBody);
-      // Submission is already in D1, so return success to user
+      console.error('Resend error:', resendResponse.status, await resendResponse.text());
     }
 
     return jsonResponse(200, { success: true, message: 'Message received. We will be in touch soon.' });
@@ -136,8 +149,7 @@ IP: ${ipAddress}
   }
 }
 
-// Handle CORS preflight
-export async function onRequestOptions() {
+function corsPreflightResponse() {
   return new Response(null, {
     status: 204,
     headers: {
@@ -148,7 +160,6 @@ export async function onRequestOptions() {
   });
 }
 
-// Helpers
 function jsonResponse(status, body) {
   return new Response(JSON.stringify(body), {
     status,
