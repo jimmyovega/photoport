@@ -2,22 +2,24 @@
   "name": "shiny-voice-19bd",
   "compatibility_date": "2026-01-24",
 
-  // Site configuration for static assets
+  // Static assets served from the Astro build output
   "assets": {
     "directory": "./dist"
-    },
+  },
 
-  // D1 Database Binding
+  // D1 Database — stores all contact form submissions
   "d1_databases": [
     {
       "binding": "DB",
       "database_name": "contact-submissions",
-      "database_id": "e58f6ee0-3ed8-49ed-a9c9-48f59e9acbbc" // Replace with your actual D1 database ID
+      "database_id": "e58f6ee0-3ed8-49ed-a9c9-48f59e9acbbc"
     }
   ],
-  
-  // Environment variables
+
+  // Environment variables (non-secret)
+  // Secrets (RESEND_API_KEY) must be set in Cloudflare Pages dashboard:
+  //   Settings -> Environment variables -> Add variable
   "vars": {
-    "RECIPIENT_EMAIL": "photo@vrc6.com" // Replace with your email
+    "RECIPIENT_EMAIL": "contact@vrc6.com"
   }
 }

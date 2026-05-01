@@ -1,10 +1,9 @@
 ---
 import Layout from '../layouts/Layout.astro';
-const web3formsKey = import.meta.env.WEB3FORMS_ACCESS_KEY;
 ---
 
 <Layout 
-  title="Contact - Photography Portfolio"
+  title="Contact - Azure Lens Photography"
   description="Get in touch for photography inquiries, bookings, and collaborations."
 >
   <div class="container mx-auto py-12 px-4">
@@ -19,10 +18,9 @@ const web3formsKey = import.meta.env.WEB3FORMS_ACCESS_KEY;
       </div>
       
       <form 
+        id="contact-form"
         class="bg-industrial-blue p-8 rounded-lg border border-cool-blue"
-        action="https://api.web3forms.com/submit" method="POST"
       >
-        <input type="hidden" name="access_key" value={web3formsKey}>
         <div class="mb-6">
           <label for="name" class="block text-light-gray mb-2 font-medium">
             Name *
@@ -76,14 +74,68 @@ const web3formsKey = import.meta.env.WEB3FORMS_ACCESS_KEY;
         </div>
         
         <button 
+          id="submit-btn"
           type="submit"
-          class="w-full px-8 py-3 bg-cool-blue hover:bg-accent-blue text-light-gray rounded transition-colors font-medium"
+          class="w-full px-8 py-3 bg-cool-blue hover:bg-accent-blue text-light-gray rounded transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Send Message
         </button>
-      </form>
-      
 
+        <div id="form-success" class="hidden mt-6 p-4 bg-green-900/40 border border-green-500 rounded text-green-300 text-center">
+          Your message has been sent. I'll be in touch soon!
+        </div>
+
+        <div id="form-error" class="hidden mt-6 p-4 bg-red-900/40 border border-red-500 rounded text-red-300 text-center">
+          Something went wrong. Please try again or email me directly.
+        </div>
+      </form>
     </div>
   </div>
 </Layout>
+
+<script>
+  const form = document.getElementById('contact-form') as HTMLFormElement;
+  const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement;
+  const successMsg = document.getElementById('form-success') as HTMLElement;
+  const errorMsg = document.getElementById('form-error') as HTMLElement;
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    // Reset state
+    successMsg.classList.add('hidden');
+    errorMsg.classList.add('hidden');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending...';
+
+    const data = {
+      name: (document.getElementById('name') as HTMLInputElement).value,
+      email: (document.getElementById('email') as HTMLInputElement).value,
+      subject: (document.getElementById('subject') as HTMLInputElement).value,
+      message: (document.getElementById('message') as HTMLTextAreaElement).value,
+    };
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        successMsg.classList.remove('hidden');
+        form.reset();
+      } else {
+        errorMsg.textContent = result.message || 'Something went wrong. Please try again.';
+        errorMsg.classList.remove('hidden');
+      }
+    } catch (err) {
+      errorMsg.classList.remove('hidden');
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Send Message';
+    }
+  });
+</script>
