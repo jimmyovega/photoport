@@ -1,0 +1,30 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout 
+  title="Page Not Found | Azure Lens Photography"
+  description="The page you're looking for doesn't exist."
+>
+  <div class="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
+    <h1 class="text-8xl font-bold text-accent-blue mb-4">404</h1>
+    <h2 class="text-2xl font-semibold text-light-gray mb-4">Page Not Found</h2>
+    <p class="text-light-gray opacity-70 mb-8 max-w-md">
+      Looks like this shot didn't make the cut. The page you're looking for doesn't exist or has been moved.
+    </p>
+    <div class="flex gap-4 flex-wrap justify-center">
+      <a 
+        href="/" 
+        class="px-8 py-3 bg-cool-blue hover:bg-accent-blue text-light-gray rounded transition-colors"
+      >
+        Back to Home
+      </a>
+      <a 
+        href="/contact" 
+        class="px-8 py-3 border-2 border-cool-blue hover:border-accent-blue text-light-gray rounded transition-colors"
+      >
+        Get In Touch
+      </a>
+    </div>
+  </div>
+</Layout>

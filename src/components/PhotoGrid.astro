@@ -147,32 +147,27 @@ const { images, altPrefix, imageData } = Astro.props;
     container.style.opacity = '1';
   }
 
-  // Check if images are loaded
-  const gridImages = document.querySelectorAll('.masonry-item img');
-  let loadedCount = 0;
+  // Wait for first batch of images to fully decode before revealing grid
+  // This prevents the jarring resize/reflow the user sees
+  const gridImages = Array.from(document.querySelectorAll('.masonry-item img'));
   const totalImages = gridImages.length;
+  const batchSize = Math.min(8, Math.ceil(totalImages * 0.3));
+  const firstBatch = gridImages.slice(0, batchSize);
 
-  gridImages.forEach((img) => {
-    if (img.complete) {
-      loadedCount++;
-    } else {
-      img.addEventListener('load', () => {
-        loadedCount++;
-        // Show masonry when first few images load
-        if (loadedCount >= Math.min(8, totalImages * 0.3)) {
-          showMasonry();
-        }
-      });
+  // Use decode() promise so images are truly paint-ready (not just loaded)
+  const decodePromises = firstBatch.map(img => {
+    if (img.complete && img.naturalWidth > 0) {
+      return img.decode().catch(() => Promise.resolve());
     }
+    return new Promise(resolve => {
+      img.addEventListener('load', () => img.decode().catch(() => {}).finally(resolve), { once: true });
+      img.addEventListener('error', resolve, { once: true });
+    });
   });
 
-  // If images are already cached, show immediately
-  if (loadedCount >= Math.min(8, totalImages * 0.3)) {
-    showMasonry();
-  }
-
-  // Fallback: show after 500ms regardless
-  setTimeout(showMasonry, 500);
+  // Show grid once first batch is decoded, or after 1500ms max
+  const timeout = new Promise(resolve => setTimeout(resolve, 1500));
+  Promise.race([Promise.all(decodePromises), timeout]).then(showMasonry);
   
   function openLightbox(index) {
     currentIndex = index;
