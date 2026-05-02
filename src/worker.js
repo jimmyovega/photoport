@@ -128,7 +128,7 @@ IP: ${ipAddress}
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'Azure Lens Contact Form <onboarding@resend.dev>',
+        from: 'Azure Lens Contact Form <contact@azurelens.work>',
         to: [recipientEmail],
         reply_to: `${name} <${email}>`,
         subject: `[Azure Lens] Contact: ${subject}`,
