@@ -110,13 +110,14 @@ async function handleContact(request, env) {
 New Contact Form Submission - Azure Lens Photography
 
 From:    ${name}
-Email:   ${email}
+Reply to: ${email}
 Subject: ${subject}
 
 Message:
 ${message}
 
 ---
+To reply, email ${name} directly at: ${email}
 Submitted: ${submittedAt}
 IP: ${ipAddress}
     `.trim();
@@ -130,8 +131,8 @@ IP: ${ipAddress}
       body: JSON.stringify({
         from: 'Azure Lens Contact Form <contact@send.azurelens.work>',
         to: [recipientEmail],
-        reply_to: `${name} <${email}>`,
-        subject: `[Azure Lens] Contact: ${subject}`,
+        reply_to: recipientEmail,
+        subject: `[Azure Lens] New enquiry from ${name}: ${subject}`,
         html: emailHtml,
         text: emailText,
       }),
