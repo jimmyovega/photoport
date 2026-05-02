@@ -3,9 +3,10 @@
  * Converts all images in public/images/ to WebP and resizes appropriately.
  * Originals are backed up to public/images/_originals/
  *
- * Usage:
- *   npm install sharp        (one time only)
- *   node scripts/optimize-images.mjs
+ * Usage (local only — do NOT commit sharp to package.json):
+ *   npm install sharp                    # install locally
+ *   node scripts/optimize-images.mjs    # run optimizer
+ *   npm uninstall sharp                  # remove before pushing
  */
 
 import sharp from 'sharp';
