@@ -1,0 +1,114 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+  title="About | Azure Tincture — Azure Lens Photography"
+  description="Azure Tincture is a New York City photographer specializing in studio, fashion, commercial and on-location photography. Available for bookings in NYC and beyond."
+>
+  <div class="container mx-auto py-12 px-4 max-w-4xl">
+
+    <!-- Hero Section -->
+    <div class="text-center mb-16">
+      <h1 class="text-4xl md:text-6xl font-bold text-accent-blue mb-4">
+        Azure Tincture
+      </h1>
+      <p class="text-xl text-light-gray opacity-80">
+        Photographer · New York City
+      </p>
+    </div>
+
+    <!-- Bio Section -->
+    <div class="grid md:grid-cols-2 gap-12 mb-16 items-start">
+      <div>
+        <h2 class="text-2xl font-bold text-accent-blue mb-6">The Work</h2>
+        <div class="space-y-4 text-light-gray leading-relaxed opacity-90">
+          <p>
+            Born and raised in New York City, my passion for visual storytelling started on the streets of the city that shaped me. My craft was forged under the mentorship of a veteran photographer at Art Lab Inc. in Snug Harbor, Staten Island — a foundation that taught me to see light, character, and moment as one.
+          </p>
+          <p>
+            After years of exploring the creative landscape from Austin, Texas, I've returned home to NYC — and the city's energy is pushing my art into new directions. Lately I've been colorizing my images to create a polarizing, otherworldly effect. Blue runs through everything I make: it's the cool industrial tone that gives my work its signature edge.
+          </p>
+          <p>
+            My approach is improvisational. I work with practical, portable gear — primarily Sony cameras — and I adapt to any environment to pull out the story that's already there. From intimate studio portraits to raw street moments, every frame is built around authenticity.
+          </p>
+        </div>
+      </div>
+
+      <div>
+        <h2 class="text-2xl font-bold text-accent-blue mb-6">The Range</h2>
+        <div class="space-y-4 text-light-gray leading-relaxed opacity-90">
+          <p>
+            Over the years I've worked across a wide spectrum — from academic professionals and MUAs to models, musicians, and sex workers. I've covered concert stages and fashion runways, captured events and editorial concepts, and been published in online publications. The common thread is people: raw, real, unguarded.
+          </p>
+          <p>
+            My work has taken me through studio fashion shoots, on-location commercial projects, runway coverage, and street photography — and I bring the same intensity to all of it. Every concept is an opportunity to push the visual boundary a little further.
+          </p>
+        </div>
+
+        <!-- Stats -->
+        <div class="grid grid-cols-3 gap-4 mt-8">
+          <div class="text-center p-4 bg-industrial-blue rounded-lg border border-cool-blue">
+            <div class="text-3xl font-bold text-accent-blue">10+</div>
+            <div class="text-sm text-light-gray opacity-70 mt-1">Years Active</div>
+          </div>
+          <div class="text-center p-4 bg-industrial-blue rounded-lg border border-cool-blue">
+            <div class="text-3xl font-bold text-accent-blue">NYC</div>
+            <div class="text-sm text-light-gray opacity-70 mt-1">Based</div>
+          </div>
+          <div class="text-center p-4 bg-industrial-blue rounded-lg border border-cool-blue">
+            <div class="text-3xl font-bold text-accent-blue">∞</div>
+            <div class="text-sm text-light-gray opacity-70 mt-1">Concepts</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- What I Shoot -->
+    <div class="mb-16">
+      <h2 class="text-2xl font-bold text-accent-blue mb-8 text-center">What I Shoot</h2>
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+        {[
+          { label: 'Studio Portraits', icon: '📸' },
+          { label: 'Fashion & Editorial', icon: '👗' },
+          { label: 'On Location', icon: '🌆' },
+          { label: 'Events & Concerts', icon: '🎵' },
+          { label: 'Runway', icon: '💃' },
+          { label: 'Street Photography', icon: '🏙️' },
+        ].map(({ label, icon }) => (
+          <div class="flex items-center gap-3 p-4 bg-industrial-blue rounded-lg border border-cool-blue">
+            <span class="text-2xl">{icon}</span>
+            <span class="text-light-gray font-medium">{label}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="text-center bg-industrial-blue rounded-lg border border-cool-blue p-10">
+      <h2 class="text-2xl font-bold text-light-gray mb-4">
+        Let's Create Something
+      </h2>
+      <p class="text-light-gray opacity-70 mb-8 max-w-xl mx-auto">
+        Available for studio sessions, on-location shoots, events, and commercial projects in NYC and beyond.
+      </p>
+      <div class="flex gap-4 justify-center flex-wrap">
+        <a
+          href="/contact"
+          class="px-8 py-3 bg-cool-blue hover:bg-accent-blue text-light-gray rounded transition-colors font-medium"
+        >
+          Get In Touch
+        </a>
+        <a
+          href="https://instagram.com/azuretincture"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="px-8 py-3 border-2 border-cool-blue hover:border-accent-blue text-light-gray rounded transition-colors font-medium"
+        >
+          Follow on Instagram
+        </a>
+      </div>
+    </div>
+
+  </div>
+</Layout>
