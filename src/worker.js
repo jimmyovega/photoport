@@ -36,7 +36,7 @@ async function handleContact(request, env) {
     const userAgent = request.headers.get('User-Agent') || 'unknown';
     const submittedAt = new Date().toISOString();
 
-    // 1. Store in D1
+    // 1. Store in D1 (failure doesn't stop step 2)
     try {
       await env.DB.prepare(
         `INSERT INTO contact_submissions (name, email, subject, message, ip_address, user_agent)
@@ -50,7 +50,7 @@ async function handleContact(request, env) {
 
     // 2. Send email via Resend
     const resendApiKey = env.RESEND_API_KEY;
-    const recipientEmail = env.RECIPIENT_EMAIL || 'contact@vrc6.com';
+    const recipientEmail = env.RECIPIENT_EMAIL;
 
     if (!resendApiKey) {
       console.error('RESEND_API_KEY not set');
