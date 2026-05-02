@@ -58,6 +58,14 @@ const currentPath = Astro.url.pathname;
         </li>
         <li>
           <a 
+            href="/about" 
+            class={`hover:text-accent-blue transition-colors ${currentPath === '/about' ? 'text-accent-blue' : ''}`}
+          >
+            About
+          </a>
+        </li>
+        <li>
+          <a 
             href="/contact" 
             class={`hover:text-accent-blue transition-colors ${currentPath === '/contact' ? 'text-accent-blue' : ''}`}
           >
@@ -122,6 +130,14 @@ const currentPath = Astro.url.pathname;
             class={`block py-2 hover:text-accent-blue transition-colors ${currentPath === '/miscellaneous' ? 'text-accent-blue' : ''}`}
           >
             Miscellaneous
+          </a>
+        </li>
+        <li>
+          <a 
+            href="/about" 
+            class={`block py-2 hover:text-accent-blue transition-colors ${currentPath === '/about' ? 'text-accent-blue' : ''}`}
+          >
+            About
           </a>
         </li>
         <li>
