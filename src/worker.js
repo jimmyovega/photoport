@@ -13,6 +13,29 @@ export default {
       return new Response('Method Not Allowed', { status: 405 });
     }
 
+    // Image optimization via Cloudflare
+    // cf.polish: free plan — auto-compresses JPEGs and converts to WebP for supported browsers
+    // cf.image: if Image Resizing is enabled on zone, also resizes to appropriate dimensions
+    if (url.pathname.startsWith('/images/') && request.method === 'GET') {
+      const accept = request.headers.get('Accept') || '';
+      const supportsWebP = accept.includes('image/webp') || accept.includes('image/avif');
+      const isHero = url.pathname.includes('hero-background');
+
+      return fetch(request, {
+        cf: {
+          // Polish: free tier — lossy compression + WebP conversion
+          polish: 'lossy',
+          // Image Resizing: only active if enabled in Cloudflare zone settings
+          // Cloudflare dashboard -> Speed -> Optimization -> Image Resizing -> On
+          image: {
+            width: isHero ? 1920 : 900,
+            quality: 82,
+            format: supportsWebP ? 'webp' : 'jpeg',
+          },
+        },
+      });
+    }
+
     // All other requests: serve static assets
     return env.ASSETS.fetch(request);
   },
