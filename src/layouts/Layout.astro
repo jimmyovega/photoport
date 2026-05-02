@@ -20,8 +20,9 @@ const { title, description = 'Professional photography portfolio showcasing stud
     {Astro.url.pathname === "/" && (
       <link rel="preload" as="image" href="/images/hero-background.webp" fetchpriority="high" />
     )}
-    <meta name="keywords" content="photography, portfolio, studio photography, street photography, photographer, professional photography" />
-    <meta name="author" content="Azure Lens Photography" />
+    <meta name="keywords" content="Azure Tincture, Azure Lens Photography, NYC photographer, New York City photographer, fashion photographer, commercial photographer, studio photography, on-location photography, street photography, event photography, runway photography, portrait photographer, editorial photography" />
+    <meta name="author" content="Azure Tincture" />
+    <link rel="canonical" href={Astro.url.href} />
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
@@ -39,7 +40,9 @@ const { title, description = 'Professional photography portfolio showcasing stud
     <meta property="twitter:description" content={description} />
     <meta property="twitter:image" content="https://azurelens.work/images/hero-background.webp" />
     
-    <link rel="icon" type="image/svg+xml" href="/images/favicon.png" />
+    <link rel="icon" type="image/webp" href="/images/favicon.webp" />
+    <link rel="shortcut icon" href="/images/favicon.webp" />
+    <meta name="theme-color" content="#1a2b3c" />
     <title>{title}</title>
   </head>
   <body class="bg-industrial-dark text-light-gray min-h-screen flex flex-col">
