@@ -1,6 +1,5 @@
 {
-  // Worker name — set this to match your Worker in the Cloudflare dashboard
-  "name": "your-worker-name",
+  "name": "shiny-voice-19bd",
   "compatibility_date": "2026-01-24",
 
   // Worker entry point
@@ -11,32 +10,21 @@
     "directory": "./dist"
   },
 
-  // Bindings are configured in the Cloudflare dashboard:
-  // Workers & Pages -> your-worker -> Bindings -> Add binding
-  //
-  // Required bindings:
-  //   R2 Bucket  | Variable: IMAGES | Bucket: your-r2-bucket-name
-  //   D1 Database | Variable: DB    | Database: your-d1-database-name
-  //
-  // Required secrets (Settings -> Variables and Secrets):
-  //   RESEND_API_KEY         — Resend API key for contact form emails
-  //   RECIPIENT_EMAIL        — Email address to receive contact form submissions
-  //   CLOUDFLARE_ACCOUNT_ID  — Your Cloudflare Account ID
-  //   CLOUDFLARE_API_TOKEN   — API token with Workers R2 Storage:Read permission
-  //   R2_BUCKET_NAME         — Name of your R2 bucket (e.g. your-images-bucket)
-
+  // R2 bucket for portfolio images
+  // Secrets (RESEND_API_KEY, CLOUDFLARE_API_TOKEN, RECIPIENT_EMAIL) are
+  // configured in Cloudflare Dashboard -> Settings -> Variables and Secrets
   "r2_buckets": [
     {
       "binding": "IMAGES",
-      "bucket_name": "your-r2-bucket-name"
+      "bucket_name": "azurelens-images"
     }
   ],
 
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "your-d1-database-name",
-      "database_id": "your-d1-database-id"
+      "database_name": "contact-submissions",
+      "database_id": "e58f6ee0-3ed8-49ed-a9c9-48f59e9acbbc"
     }
   ]
 }
