@@ -7,7 +7,7 @@ import { join } from 'node:path';
 
 const ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID;
 const API_TOKEN  = process.env.CLOUDFLARE_API_TOKEN;
-const BUCKET     = 'azurelens-images';
+const BUCKET     = process.env.R2_BUCKET_NAME || 'your-r2-bucket-name';
 
 export async function getImages(folder) {
   // 1. Try local filesystem

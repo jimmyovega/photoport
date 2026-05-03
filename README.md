@@ -13,7 +13,7 @@ Personal photography portfolio for **Azure Tincture**, a New York City photograp
 | Framework | [Astro](https://astro.build) (static output) |
 | Styling | [Tailwind CSS](https://tailwindcss.com) |
 | Deployment | Cloudflare Workers (via `wrangler deploy`) |
-| Image Storage | Cloudflare R2 (`azurelens-images` bucket) |
+| Image Storage | Cloudflare R2 (`your-r2-bucket-name` bucket) |
 | Contact Form | Cloudflare Worker + [Resend](https://resend.com) email + D1 database |
 | Analytics | Cloudflare Web Analytics (built-in) |
 | DNS/CDN | Cloudflare (azurelens.work) |
@@ -110,7 +110,7 @@ Or convert manually and drop the `.webp` file directly into the right subfolder:
 # Login to Cloudflare (one time)
 npx wrangler login
 
-# Upload all images from public/images/ to the azurelens-images R2 bucket
+# Upload all images from public/images/ to the your-r2-bucket-name R2 bucket
 npm run upload-images
 
 # Or upload a single subfolder only
@@ -135,12 +135,12 @@ That's it — the gallery auto-discovers images via the R2 API. No code changes 
 The contact form POSTs to `/api/contact` which is handled by `src/worker.js`. It:
 
 1. Validates the form fields
-2. Stores the submission in a **Cloudflare D1** database (`contact-submissions` table)
+2. Stores the submission in a **Cloudflare D1** database (`your-d1-database-name` table)
 3. Sends an email notification via **Resend**
 
 ### D1 Table Schema
 
-Run this once in the Cloudflare Dashboard → D1 → `contact-submissions` → Console:
+Run this once in the Cloudflare Dashboard → D1 → `your-d1-database-name` → Console:
 
 ```sql
 CREATE TABLE IF NOT EXISTS contact_submissions (
@@ -159,7 +159,7 @@ CREATE TABLE IF NOT EXISTS contact_submissions (
 
 ## Environment Variables
 
-Set these in **Cloudflare Dashboard → Workers & Pages → shiny-voice-19bd → Settings → Variables and Secrets**:
+Set these in **Cloudflare Dashboard → Workers & Pages → your-worker-name → Settings → Variables and Secrets**:
 
 | Variable | Type | Description |
 |---|---|---|
@@ -188,12 +188,28 @@ And in **Settings → Build → Variables and Secrets** (needed during the build
 
 ## Cloudflare Bindings
 
-Declared in `wrangler.jsonc` and must also be linked in the Cloudflare dashboard under **Workers & Pages → shiny-voice-19bd → Bindings**:
+All bindings and secrets are configured entirely in the **Cloudflare dashboard** — nothing sensitive lives in the codebase.
 
-| Binding | Type | Resource |
+### Bindings (Workers & Pages → your-worker → Bindings)
+
+| Variable | Type | Value |
 |---|---|---|
-| `IMAGES` | R2 Bucket | `azurelens-images` |
-| `DB` | D1 Database | `contact-submissions` |
+| `IMAGES` | R2 Bucket | your R2 bucket name |
+| `DB` | D1 Database | your D1 database name |
+
+### Variables and Secrets (Settings → Variables and Secrets)
+
+| Variable | Type | Description |
+|---|---|---|
+| `RESEND_API_KEY` | Secret | Resend API key for contact form emails |
+| `RECIPIENT_EMAIL` | Plaintext | Email to receive contact form submissions |
+| `CLOUDFLARE_ACCOUNT_ID` | Plaintext | Your Cloudflare Account ID |
+| `CLOUDFLARE_API_TOKEN` | Secret | API token with Workers R2 Storage:Read |
+| `R2_BUCKET_NAME` | Plaintext | Your R2 bucket name |
+
+These same variables must also be added to **Settings → Build → Variables and Secrets** so they are available during the build process (for R2 image listing).
+
+> **Note:** After cloning, update the placeholder values in `wrangler.jsonc` (, `bucket_name`, `database_name`, `database_id`) to match your Cloudflare resources. All sensitive values (API keys, account IDs) live only in the dashboard.
 
 ---
 
