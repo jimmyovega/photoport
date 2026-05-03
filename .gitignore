@@ -4,3 +4,4 @@ dist
 .env.local
 .env.production
 public/images/_originals/
+"public/images/" 
