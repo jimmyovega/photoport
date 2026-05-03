@@ -5,3 +5,7 @@ dist
 .env.production
 public/images/_originals/
 "public/images/" 
+"public/images/studio" 
+"public/images/street" 
+"public/images/location" 
+"public/images/misc" 
