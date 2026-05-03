@@ -6,7 +6,13 @@ import { join } from 'node:path';
 
 // Get all image files from the street folder
 const imagesDir = join(process.cwd(), 'public', 'images', 'street');
-const files = await readdir(imagesDir);
+let files = [];
+try {
+  files = await readdir(imagesDir);
+} catch {
+  // Directory may not exist locally if images are stored in R2
+  files = [];
+}
 
 // Filter for image files and create paths
 const images = files
