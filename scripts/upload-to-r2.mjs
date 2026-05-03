@@ -1,7 +1,7 @@
 /**
  * Azure Lens Photography — R2 Bulk Upload Script
  *
- * Uploads all images from public/images/ to the azurelens-images R2 bucket.
+ * Uploads all images from public/images/ to your configured R2 bucket.
  * Preserves the directory structure so /images/studio/foo.webp in the bucket
  * maps to https://azurelens.work/images/studio/foo.webp on the site.
  *
