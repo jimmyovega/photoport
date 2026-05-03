@@ -1,24 +1,9 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import PhotoGrid from '../components/PhotoGrid.astro';
-import { readdir } from 'node:fs/promises';
-import { join } from 'node:path';
+import { getImages } from '../lib/getImages.mjs';
 
-// Get all image files from the location folder
-const imagesDir = join(process.cwd(), 'public', 'images', 'location');
-let files = [];
-try {
-  files = await readdir(imagesDir);
-} catch {
-  // Directory may not exist locally if images are stored in R2
-  files = [];
-}
-
-// Filter for image files and create paths
-const images = files
-  .filter(file => /\.(jpg|jpeg|png|webp|gif)$/i.test(file))
-  .sort() // Optional: sort alphabetically
-  .map(file => `/images/location/${file}`);
+const images = await getImages('location');
 ---
 
 <Layout 
