@@ -13,24 +13,22 @@ export default {
       return new Response('Method Not Allowed', { status: 405 });
     }
 
-    // Serve images from R2 bucket
-    if (url.pathname.startsWith('/images/')) {
-      const key = url.pathname.slice(1); // strip leading slash -> 'images/foo.webp'
-      const object = await env.IMAGES.get(key);
-
-      if (object === null) {
-        // Fall through to static assets (handles logo, favicon etc still in dist)
-        return env.ASSETS.fetch(request);
+    // Serve images from R2 bucket (falls back to static assets if binding unavailable)
+    if (url.pathname.startsWith('/images/') && env.IMAGES) {
+      const key = url.pathname.slice(1);
+      try {
+        const object = await env.IMAGES.get(key);
+        if (object !== null) {
+          const headers = new Headers();
+          object.writeHttpMetadata(headers);
+          headers.set('etag', object.httpEtag);
+          headers.set('cache-control', 'public, max-age=31536000, immutable');
+          headers.set('content-type', headers.get('content-type') || 'image/webp');
+          return new Response(object.body, { headers });
+        }
+      } catch (err) {
+        console.error('R2 error:', err);
       }
-
-      const headers = new Headers();
-      object.writeHttpMetadata(headers);
-      headers.set('etag', object.httpEtag);
-      // Cache images aggressively at the edge — 1 year
-      headers.set('cache-control', 'public, max-age=31536000, immutable');
-      headers.set('content-type', headers.get('content-type') || 'image/webp');
-
-      return new Response(object.body, { headers });
     }
 
     // All other requests: serve static assets

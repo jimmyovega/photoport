@@ -59,7 +59,7 @@ async function main() {
 
     try {
       execSync(
-        `npx wrangler r2 object put "${BUCKET}/${key}" --file "${imgPath}" --content-type "image/webp"`,
+        `npx wrangler r2 object put "${BUCKET}/${key}" --file "${imgPath}" --content-type "image/webp" --remote`,
         { stdio: 'pipe' }
       );
       console.log(`  OK  ${key.padEnd(60)} ${sizeMb}kb`);
