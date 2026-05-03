@@ -21,7 +21,7 @@ import { dirname } from 'node:path';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const IMAGES_DIR = join(__dirname, '..', 'public', 'images');
-const BUCKET = 'azurelens-images';
+const BUCKET = process.env.R2_BUCKET_NAME || 'your-r2-bucket-name';
 const SKIP_DIRS = ['_originals'];
 const SUBFOLDER_FILTER = process.argv[2] || null;
 

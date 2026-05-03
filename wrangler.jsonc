@@ -1,5 +1,5 @@
 {
-  "name": "shiny-voice-19bd",
+  "name": "your-worker-name",
   "compatibility_date": "2026-01-24",
 
   // Worker entry point
@@ -24,13 +24,13 @@
     {
       "binding": "DB",
       "database_name": "contact-submissions",
-      "database_id": "e58f6ee0-3ed8-49ed-a9c9-48f59e9acbbc"
+      "database_id": "your-d1-database-id"
     }
   ],
 
   // Non-secret environment variables
   // Secrets (RESEND_API_KEY) must be set in Worker Settings -> Variables & Secrets
   "vars": {
-    "RECIPIENT_EMAIL": "contact@vrc6.com"
+    "RECIPIENT_EMAIL": "your@email.com"
   }
 }
