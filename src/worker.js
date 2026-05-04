@@ -148,8 +148,8 @@ IP: ${ipAddress}
       },
       body: JSON.stringify({
         from: 'Azure Lens Contact Form <contact@send.azurelens.work>',
-        to: [recipientEmail],
-        reply_to: recipientEmail,
+        to: `${recipientEmail}`,
+        reply_to: `${recipientEmail}`,
         subject: `[Azure Lens] New enquiry from ${name}: ${subject}`,
         html: emailHtml,
         text: emailText,
