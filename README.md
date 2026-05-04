@@ -164,11 +164,14 @@ Set these in **Cloudflare Dashboard → Workers & Pages → your-worker-name →
 | Variable | Type | Description |
 |---|---|---|
 | `RESEND_API_KEY` | Secret | API key from [resend.com](https://resend.com) for sending contact form emails |
-| `RECIPIENT_EMAIL` | Plaintext | Email address to receive contact form submissions |
-| `CLOUDFLARE_ACCOUNT_ID` | Plaintext | Your Cloudflare Account ID (for R2 image listing at build time) |
 | `CLOUDFLARE_API_TOKEN` | Secret | API token with `Workers R2 Storage:Read` permission |
 
-Please keep in mind the previous variables are not to be confused with **Settings → Build → Variables and Secrets**:
+And in **Settings → Build → Variables and Secrets** (needed during the build process):
+
+| Variable | Type | Description |
+|---|---|---|
+| `CLOUDFLARE_ACCOUNT_ID` | Plaintext | Your Cloudflare Account ID (for R2 image listing at build time) |
+| `R2_BUCKET_NAME` | Plaintext | Your Cloudflare R2 Bucket Name (for loading all gallery images) |
 
 ### Creating the Cloudflare API Token
 
