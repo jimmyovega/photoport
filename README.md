@@ -168,12 +168,7 @@ Set these in **Cloudflare Dashboard → Workers & Pages → your-worker-name →
 | `CLOUDFLARE_ACCOUNT_ID` | Plaintext | Your Cloudflare Account ID (for R2 image listing at build time) |
 | `CLOUDFLARE_API_TOKEN` | Secret | API token with `Workers R2 Storage:Read` permission |
 
-And in **Settings → Build → Variables and Secrets** (needed during the build process):
-
-| Variable | Type | Description |
-|---|---|---|
-| `CLOUDFLARE_ACCOUNT_ID` | Plaintext | Same as above |
-| `CLOUDFLARE_API_TOKEN` | Secret | Same as above |
+Please keep in mind the previous variables are not to be confused with **Settings → Build → Variables and Secrets**:
 
 ### Creating the Cloudflare API Token
 
