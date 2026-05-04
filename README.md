@@ -168,12 +168,12 @@ Set in **Workers & Pages → shiny-voice-19bd → Bindings**:
 
 | Variable | Type | Value |
 |---|---|---|
-| `IMAGES` | R2 Bucket | `azurelens-images` |
-| `DB` | D1 Database | `contact-submissions` |
+| `IMAGES` | R2 Bucket | Name of your R2 bucket |
+| `DB` | D1 Database | Name of your D1 SQL database |
 
 ### Cloudflare Dashboard — Runtime Secrets
 
-Set in **Workers & Pages → shiny-voice-19bd → Settings → Variables and Secrets**:
+Set in **Workers & Pages → Name of Cloudflare Worker → Settings → Variables and Secrets**:
 
 | Variable | Type | Description |
 |---|---|---|
@@ -187,7 +187,7 @@ Set in **Settings → Build → Variables and Secrets** (needed during the build
 | Variable | Type | Description |
 |---|---|---|
 | `CLOUDFLARE_ACCOUNT_ID` | Plaintext | Your Cloudflare Account ID |
-| `R2_BUCKET_NAME` | Plaintext | `azurelens-images` |
+| `R2_BUCKET_NAME` | Plaintext | Your R2 Bucket to load gallery pictures |
 
 ### Creating the Cloudflare API Token
 
@@ -238,8 +238,7 @@ If you run your own mail server and contact form emails are flagged as spam, add
 
 ```
 # Whitelist Resend sending addresses
-whitelist_from *@resend.dev
-whitelist_from *@send.azurelens.work
+whitelist_from *@azurelens.work
 
 # Zero out .work TLD false positive penalties
 score PDS_OTHER_BAD_TLD 0.0
@@ -248,9 +247,7 @@ score FROM_SUSPICIOUS_NTLD_FP 0.0
 score FROM_NTLD_REPLY_FREEMAIL 0.0
 
 # Trust Resend's sending IPs (Amazon SES us-east-1)
-trusted_networks 54.240.0.0/18
-trusted_networks 205.251.224.0/19
-trusted_networks 199.255.192.0/22
+trusted_networks <ip/subnet>
 ```
 
 Then restart SpamAssassin:
