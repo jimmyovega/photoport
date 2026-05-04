@@ -165,6 +165,7 @@ Set these in **Cloudflare Dashboard → Workers & Pages → your-worker-name →
 |---|---|---|
 | `RESEND_API_KEY` | Secret | API key from [resend.com](https://resend.com) for sending contact form emails |
 | `CLOUDFLARE_API_TOKEN` | Secret | API token with `Workers R2 Storage:Read` permission |
+| `RECIPIENT EMAIL` | Plaintext | Your contact email to receive all Resend form submissions |
 
 And in **Settings → Build → Variables and Secrets** (needed during the build process):
 
