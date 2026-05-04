@@ -11,8 +11,8 @@
   },
 
   // R2 bucket for portfolio images
-  // Secrets (RESEND_API_KEY, CLOUDFLARE_API_TOKEN, RECIPIENT_EMAIL) are
-  // configured in Cloudflare Dashboard -> Settings -> Variables and Secrets
+  // Secrets (RESEND_API_KEY, CLOUDFLARE_API_TOKEN) are configured in
+  // Cloudflare Dashboard -> Settings -> Variables and Secrets
   "r2_buckets": [
     {
       "binding": "IMAGES",
@@ -26,5 +26,11 @@
       "database_name": "contact-submissions",
       "database_id": "e58f6ee0-3ed8-49ed-a9c9-48f59e9acbbc"
     }
-  ]
+  ],
+
+  // Non-secret environment variables
+  // Secrets (RESEND_API_KEY, CLOUDFLARE_API_TOKEN) stay in dashboard only
+  "vars": {
+    "RECIPIENT_EMAIL": "contact@vrc6.com"
+  }
 }
