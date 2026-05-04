@@ -238,7 +238,7 @@ If you run your own mail server and contact form emails are flagged as spam, add
 
 ```
 # Whitelist Resend sending addresses
-whitelist_from *@azurelens.work
+whitelist_from *@yourdomain.tld
 
 # Zero out .work TLD false positive penalties
 score PDS_OTHER_BAD_TLD 0.0
